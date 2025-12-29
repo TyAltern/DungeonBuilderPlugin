@@ -1,0 +1,15 @@
+name: DungeonBuilderPlugin
+version: '1.0-SNAPSHOT'
+main: me.TyAlternative.dungeonBuilderPlugin.DungeonBuilderPlugin
+api-version: '1.21'
+
+commands:
+  dungeon:
+    description: Commandes de gestion des donjons
+    usage: /dungeon <create|delete|tp|list|info> [args]
+    aliases: [dg]
+
+permissions:
+  dungeonbuilder.edit:
+    description: Permet d'utiliser le mode Edit
+    default: op
