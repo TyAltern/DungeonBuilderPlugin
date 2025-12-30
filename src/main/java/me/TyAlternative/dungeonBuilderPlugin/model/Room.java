@@ -3,7 +3,8 @@ package me.TyAlternative.dungeonBuilderPlugin.model;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.Bukkit;
-import java.util.UUID;
+import org.bukkit.Material;
+import java.util.*;
 
 public class Room {
 
@@ -12,6 +13,14 @@ public class Room {
     private final Location corner1;
     private final Location corner2;
     private final Location goldBlockLocation;
+
+    private Material iconMaterial;
+    private final Set<String> tags;
+    private int weight;
+    private int minOccurrence;
+    private int maxOccurrence;
+    private int minDistance;
+    private int maxDistance;
 
     public Room(String name, Location corner1, Location corner2) {
         this.name = name;
@@ -36,6 +45,14 @@ public class Room {
                 minY,
                 minZ - 1
         );
+
+        this.iconMaterial = Material.GOLD_BLOCK;
+        this.tags = new HashSet<>();
+        this.weight = 10;
+        this.minOccurrence = -1; // -1 = non défini
+        this.maxOccurrence = -1;
+        this.minDistance = -1;
+        this.maxDistance = -1;
 
     }
 
@@ -62,6 +79,74 @@ public class Room {
 
     public Location getGoldBlockLocation() {
         return goldBlockLocation.clone();
+    }
+
+    public Material getIconMaterial() {
+        return iconMaterial;
+    }
+
+    public void setIconMaterial(Material material) {
+        this.iconMaterial = material;
+    }
+
+    public Set<String> getTags() {
+        return new HashSet<>(tags);
+    }
+
+    public void addTag(String tag) {
+        tags.add(tag);
+    }
+
+    public void removeTag(String tag) {
+        tags.remove(tag);
+    }
+
+    public boolean hasTag(String tag) {
+        return tags.contains(tag);
+    }
+
+    public void clearTags() {
+        tags.clear();
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = Math.max(0, weight);
+    }
+
+    public int getMinOccurrence() {
+        return minOccurrence;
+    }
+
+    public void setMinOccurrence(int minOccurrence) {
+        this.minOccurrence = minOccurrence;
+    }
+
+    public int getMaxOccurrence() {
+        return maxOccurrence;
+    }
+
+    public void setMaxOccurrence(int maxOccurrence) {
+        this.maxOccurrence = maxOccurrence;
+    }
+
+    public int getMinDistance() {
+        return minDistance;
+    }
+
+    public void setMinDistance(int minDistance) {
+        this.minDistance = minDistance;
+    }
+
+    public int getMaxDistance() {
+        return maxDistance;
+    }
+
+    public void setMaxDistance(int maxDistance) {
+        this.maxDistance = maxDistance;
     }
 
 

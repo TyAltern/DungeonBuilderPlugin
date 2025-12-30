@@ -95,6 +95,15 @@ public class RoomManager {
         return true;
     }
 
+    public void removeTagFromAllRooms(String dungeonName, String tagName) {
+        Map<String, Room> rooms = roomsByDungeon.get(dungeonName.toLowerCase());
+        if (rooms == null) return;
+
+        for (Room room : rooms.values()) {
+            room.removeTag(tagName);
+        }
+    }
+
 
     public Collection<Room> getRooms(String dungeonName) {
         Map<String, Room> rooms = roomsByDungeon.get(dungeonName.toLowerCase());
@@ -140,6 +149,19 @@ public class RoomManager {
                 JsonObject roomObj= new JsonObject();
                 roomObj.addProperty("name", room.getName());
                 roomObj.addProperty("world", room.getWorldUUID().toString());
+                roomObj.addProperty("iconMaterial", room.getIconMaterial().name());
+
+                JsonArray tagsArray = new JsonArray();
+                for (String tag : room.getTags()) {
+                    tagsArray.add(tag);
+                }
+                roomObj.add("tags", tagsArray);
+
+                roomObj.addProperty("weight", room.getWeight());
+                roomObj.addProperty("minOccurrence", room.getMinOccurrence());
+                roomObj.addProperty("maxOccurrence", room.getMaxOccurrence());
+                roomObj.addProperty("minDistance", room.getMinDistance());
+                roomObj.addProperty("maxDistance", room.getMaxDistance());
 
                 JsonObject corner1Obj = new JsonObject();
                 corner1Obj.addProperty("x", room.getCorner1().getX());
@@ -212,11 +234,41 @@ public class RoomManager {
                             corner2Obj.get("z").getAsDouble());
 
                     Room room = new Room(name, corner1, corner2);
+
+
+                    if (roomObj.has("iconMaterial")) {
+                        Material iconMat = Material.valueOf(roomObj.get("iconMaterial").getAsString());
+                        room.setIconMaterial(iconMat);
+                    }
+
+                    if (roomObj.has("tags")) {
+                        JsonArray tagsArray = roomObj.getAsJsonArray("tags");
+                        for (JsonElement tagElement : tagsArray) {
+                            room.addTag(tagElement.getAsString());
+                        }
+                    }
+
+                    if (roomObj.has("weight")) {
+                        room.setWeight(roomObj.get("weight").getAsInt());
+                    }
+                    if (roomObj.has("minOccurrence")) {
+                        room.setMinOccurrence(roomObj.get("minOccurrence").getAsInt());
+                    }
+                    if (roomObj.has("maxOccurrence")) {
+                        room.setMaxOccurrence(roomObj.get("maxOccurrence").getAsInt());
+                    }
+                    if (roomObj.has("minDistance")) {
+                        room.setMinDistance(roomObj.get("minDistance").getAsInt());
+                    }
+                    if (roomObj.has("maxDistance")) {
+                        room.setMaxDistance(roomObj.get("maxDistance").getAsInt());
+                    }
+
                     rooms.put(name, room);
 
                     // Restaurer le bloc d'or
                     Location goldLoc = room.getGoldBlockLocation();
-                    goldLoc.getBlock().setType(Material.GOLD_BLOCK);
+                    goldLoc.getBlock().setType(room.getIconMaterial());
 
                     try {
                         int num = Integer.parseInt(name.substring(5)); // "Room_X"
